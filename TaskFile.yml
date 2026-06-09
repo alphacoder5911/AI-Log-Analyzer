@@ -1,0 +1,29 @@
+version: "3"
+
+tasks:
+  build:
+    cmds:
+      - go build -o bin/app ./cmd/api
+  run:
+    cmds:
+      - go run ./internal/Test/gen.go
+  lint:
+    cmds:
+      - golangci-lint run ./...
+  migrate-up:
+    cmds:
+      - migrate -path db/migrations -database 'postgres://neondb_owner:npg_yD9kpsXTJGr2@ep-soft-mouse-appdugx7-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' up
+  migrate-down:
+    cmds:
+      - migrate -path db/migrations -database 'postgres://neondb_owner:npg_yD9kpsXTJGr2@ep-soft-mouse-appdugx7-pooler.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require' down
+  docker-up:
+    cmds:
+      - docker compose -f docker/docker-compose.yml up -d 
+  docker-down:
+    cmds:
+      - docker compose -f docker/docker-compose.yml down
+  format:
+    cmds:
+      - go fmt ./...
+
+      
