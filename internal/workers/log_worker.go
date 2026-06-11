@@ -59,7 +59,7 @@ func( L *LogWorker) StartWorker(ctx context.Context) {
 	if err != nil {
 		log.Error().Err(err).Msg("Failed to save incident")
 	}
-	log.Info().Interface("Incident",vall).Msg("Pushed incident to db")//recommended way to set logs 
+	log.Info().Interface("Incident",vall).Msg("Pushed incident to incident queue ")//recommended way to set logs 
 	
 
     // PUSH TO THE HUB

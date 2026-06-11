@@ -64,12 +64,19 @@ func main() {
 
 
 
-	IncidentRepo := repository.NewIncidentRepo(db)
+	IncidentRepo := repository.NewIncidentRepo(db,rdb)
 	logRepo := service.NewLogREpo(rdb, *analyzer)
 	worker := workers.NewLogWorker(logRepo, analyzer, hub, IncidentRepo)
 
 	// 1. Fire up background data processor thread
 	go worker.StartWorker(context.Background()) 
+
+
+	//Initializing goroutines for dbworker and asynchronous dbwriter 
+	
+	DBWorker:=workers.NewDBWorker(IncidentRepo,rdb)
+	go DBWorker.StartDBWorker(context.Background())
+	
 
 	// 2. Wrap log generator loop in a Goroutine so it streams concurrently
 	go func() {
@@ -78,8 +85,8 @@ func main() {
 		fmt.Println("[Generator] Traffic simulator engine initialized.")
 
 		var v models.LogEntry
-		for i := 0; i < 10; i++ {
-			time.Sleep(5* time.Second)
+		for i := 0; i < 50; i++ {
+			time.Sleep(0)
 			rindex := rand.Intn(len(levels))
 
 			if levels[rindex] == "ERROR" {
