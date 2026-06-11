@@ -116,7 +116,10 @@ func main() {
 		fmt.Println("[Generator] Run complete. Finished sending 10 test vectors.")
 	}()
 
+	inciServ:=service.NewIncidentService(IncidentRepo)
+	inciHand:=server.NewIncidentHandler(inciServ)
+
 	// 3. Launch HTTP server infrastructure (Blocks execution and keeps main open)
-	serverr := server.StartServer(hub)
+	serverr := server.StartServer(hub,inciHand)
 	serverr.Run(":8080")
 }

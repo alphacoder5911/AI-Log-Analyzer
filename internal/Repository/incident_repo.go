@@ -13,6 +13,7 @@ import (
 type Incii interface {
 	SaveIncident(ctx context.Context, log models.LogEntry, analysis models.AIAnalysis) (*models.Incidents, error)
 	LPOP(ctx context.Context) (models.Incidents,error)
+	GetRecentIncidents(limit int)(*[]models.Incidents,error)
 	PersistIncident(ctx context.Context,Incident models.Incidents) (*models.Incidents,error)
 }
 
@@ -75,4 +76,15 @@ func(I *IncidentRepo) PersistIncident(ctx context.Context,Incident models.Incide
 		return &models.Incidents{},err
 	}
 	return &Incident,nil
+}
+
+func(I *IncidentRepo) GetRecentIncidents(limit int)(*[]models.Incidents,error){
+	var incidents []models.Incidents
+
+	err:=I.db.Order("created_at DESC").Limit(limit).Find(&incidents).Error
+	if err!=nil{
+		return nil,err
+	}
+
+	return &incidents,nil
 }
